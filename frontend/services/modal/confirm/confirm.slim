@@ -1,0 +1,7 @@
+.modal-confirm ng-controller="ModalConfirmCtrl"
+  .modal-confirm__title
+    | {{rConfirm.title()}}
+  button.modal-confirm__button.button.button-positive ng-click="rConfirm.ok()"
+    | {{rConfirm.buttonOk()}}
+  button.modal-confirm__button.modal-confirm__button_last.button.button-positive ng-click="rConfirm.cancel()"
+    | Cancel

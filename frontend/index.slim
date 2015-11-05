@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title Teletext
+
+    /! bower:css
+    /! endinject
+
+    /! css:css
+    /! endinject
+
+  body(ng-app='App' ng-controller='ApplicationCtrl')
+    .wrapper
+      ui-view
+
+    /! vendors:js
+    /! endinject
+
+    /! bower:js
+    /! endinject
+
+    /! angular:js
+    /! endinject
+
+    /! templates:js
+    /! endinject
