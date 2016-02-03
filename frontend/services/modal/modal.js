@@ -1,69 +1,56 @@
-angular.module('App.service.modal', [
-  'App.service.modal.confirm'
-])
-    .factory('Modal', function ($window, $compile, $timeout, $rootScope, $templateCache) {
-      var model = {
-        dialog: [],
-        close: function (id) {
-          model.dialog[id] && model.dialog[id].close();
-        },
-        open: function (template, scope, id, className) {
-          id = id || Math.random(1000 * 1000);
-          className = className || '';
-          if (!model.dialog[id]) {
-            var container = angular.element($window.document.body);
-            var element = angular.element('<div class="rs-modal" template="template"></div>');
+(function () {
+  'use strict';
 
-            scope = scope && scope.$new() || $rootScope.$new();
-            scope.template = template;
-            scope.className = className;
-            scope.close = function () {
-              scope.$destroy();
-              element.remove();
-              delete model.dialog[id];
-            };
+  angular
+    .module('App.service.modal', [
+      'App.service.modal.confirm',
+      'ui.bootstrap'
+    ])
+    .factory('Modal', Modal);
 
-            model.dialog[id] = scope;
 
-            $compile(element)(scope);
-            container.append(element);
+  Modal.$inject = ['$window', '$compile', '$rootScope', '$uibModal'];
 
-            return scope;
-          } else {
-            return model.dialog[id];
-          }
-        },
-        confirm: function (options) {
-          options = options || {};
-          var scope = $rootScope.$new();
-          scope.confirm = {
-            title: options.title || 'Confirm action',
-            ok: options.ok || 'OK',
-            cancel: options.cancel || 'Cancel',
-            result: $.Deferred()
-          };
-          model.open('services/modal/confirm/confirm.html', scope, 'modal-confirm', options.className);
-          return scope.confirm.result.always(function () {
-            model.close('modal-confirm');
-          })
-        }
+  function Modal($window, $compile, $rootScope, $uibModal) {
+    return {
+      dialog: null,
+      close: close,
+      open: open,
+      confirm: confirm
+    };
+
+    function close() {
+      this.dialog && this.dialog.close();
+    }
+
+    function open(options) {
+      return this.dialog = $uibModal.open(options);
+    }
+
+    function confirm(options) {
+      options = angular.extend({
+        title: 'Confirm action',
+        ok: 'OK',
+        cancel: 'Cancel'
+      }, options);
+
+      var scope = $rootScope.$new();
+      scope.confirm = {
+        title: options.title,
+        ok: options.ok,
+        cancel: options.cancel,
+        result: $.Deferred()
       };
 
-      return model;
-    })
+      return this.open({
+        scope: scope,
+        windowTopClass: 'modal-confirm',
+        templateUrl: 'services/modal/confirm/confirm.html',
+        controller: 'ModalConfirmCtrl',
+        controllerAs: 'rConfirm',
+        bindToController: true
+      });
+    }
+  }
 
-    .directive('rsModal', function () {
-      return {
-        restrict: 'C',
-        templateUrl: 'services/modal/modal.html',
-        scope: true,
-        controller: function ($scope) {
-          var model = {
-            getTemplate: function () {
-              return $scope.template;
-            }
-          };
-          $scope.rModal = model;
-        }
-      };
-    });
+})();

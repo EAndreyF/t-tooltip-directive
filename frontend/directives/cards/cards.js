@@ -1,18 +1,30 @@
-angular.module('App.directive.cards', [
-    'App.model.cards'
-])
+(function () {
+  'use strict';
 
-  .directive('rsCards', function(Cards) {
+  angular
+    .module('App.directive.cards', [
+      'App.model.cards'
+    ])
+    .directive('rsCards', rsCardsDirective);
+
+  function rsCardsDirective() {
     return {
-      restrict: 'C',
+      restrict: 'E',
       templateUrl: 'directives/cards/cards.html',
-      controller: function ($scope, $state) {
-        var model = {
-          getCards: function () {
-            return Cards.getCards()
-          }
-        };
-        $scope.rCards = model;
-      }
+      controller: CardsCtrl,
+      controllerAs: 'rCards'
     };
-  });
+  }
+
+  CardsCtrl.$inject = ['Cards'];
+
+  function CardsCtrl(Cards) {
+    var vm = this;
+    vm.getCards = getCards;
+
+    function getCards() {
+      return Cards.getCards()
+    }
+  }
+
+})();

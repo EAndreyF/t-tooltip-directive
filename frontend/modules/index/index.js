@@ -1,17 +1,26 @@
-angular.module('App.module.index', [
-    'App.directive.cards',
-    'App.model.cards'
-])
+(function () {
+  'use strict';
 
-  .controller('IndexCtrl', function ($scope, Cards) {
+  angular
+    .module('App.module.index', [
+      'App.directive.cards',
+      'App.model.cards',
+      'App.service.modal'
+    ])
+    .controller('IndexCtrl', IndexCtrl);
 
-    var model = {
-      add: function () {
-        Cards.addCard({text: model.value});
-        model.value = '';
-      },
-      value: ''
-    };
+  IndexCtrl.$inject = ['Cards', 'Modal'];
 
-    $scope.rIndex = model;
-  });
+  function IndexCtrl(Cards, Modal) {
+    var vm = this;
+    vm.add = add;
+    vm.value = '';
+
+    Modal.confirm();
+
+    function add() {
+      Cards.addCard({text: vm.value});
+      vm.value = '';
+    }
+  }
+})();

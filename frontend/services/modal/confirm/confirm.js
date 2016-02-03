@@ -1,23 +1,37 @@
-angular.module('App.service.modal.confirm', [])
-    .controller('ModalConfirmCtrl', function ($scope) {
+(function () {
+  'use strict';
 
-      var model = {
-        ok: function () {
-          return $scope.confirm.result.resolve();
-        },
-        cancel: function () {
-          return $scope.confirm.result.reject();
-        },
-        buttonOk: function () {
-          return $scope.confirm.ok;
-        },
-        buttonCancel: function () {
-          return $scope.confirm.cancel;
-        },
-        title: function () {
-          return $scope.confirm.title;
-        }
-      };
+  angular
+    .module('App.service.modal.confirm', [])
+    .controller('ModalConfirmCtrl', ModalConfirmCtrl);
 
-      $scope.rConfirm = model;
-    });
+  function ModalConfirmCtrl() {
+    var vm = this;
+    vm.ok = ok;
+    vm.cancel = cancel;
+    vm.buttonOk = buttonOk;
+    vm.buttonCancel = buttonCancel;
+    vm.title = title;
+
+    function ok() {
+      return this.confirm.result.resolve();
+    }
+
+    function cancel() {
+      return this.confirm.result.reject();
+    }
+
+    function buttonOk() {
+      return this.confirm.ok;
+    }
+
+    function buttonCancel() {
+      return this.confirm.cancel;
+    }
+
+    function title() {
+      return this.confirm.title;
+    }
+  }
+
+})();

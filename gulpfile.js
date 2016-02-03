@@ -44,7 +44,7 @@ var paths = {
   css: ['./app.styl'],
   js: ['./**/*.js'],
   templates: ['./**/*.slim'], // need to installed slim
-  vendors: ['./venodrs/*'],
+  vendors: ['./vendors/*'],
   img: ['./**/*.{png,jpg,gif,svg}'],
   fonts: ['./fonts/*']
 };
@@ -64,93 +64,87 @@ gulp.task('clean', function () {
 // Compile all template files
 gulp.task('slim template compile', function () {
   return gulp.src(path.joinArray(src, paths.templates))
-      .pipe(slim({
-        pretty: true,
-        options: "attr_list_delims={'(' => ')', '[' => ']'}"
-      }))
-      .on('error', swallowError)
-      .pipe(gulp.dest(path.join(dest, 'html')));
+    .pipe(slim({
+      pretty: true,
+      options: "attr_list_delims={'(' => ')', '[' => ']'}"
+    }))
+    .on('error', swallowError)
+    .pipe(gulp.dest(path.join(dest, 'html')));
 });
 
 gulp.task('create template cache', ['slim template compile'], function () {
   return gulp.src(path.join(dest, 'html/**/*.html'))
-      .pipe(templateCache())
-      .pipe(gulp.dest(path.join(dest)));
+    .pipe(templateCache('templates.js', {standalone: true}))
+    .pipe(gulp.dest(path.join(dest, 'js')));
 });
 
 // Compile all css files
 gulp.task('css compile', function () {
   return gulp.src(path.joinArray(src, paths.css))
-      .pipe(stylus())
-      .pipe(gulp.dest(path.join(dest, 'css')))
-      .on('error', swallowError);
+    .pipe(stylus())
+    .pipe(gulp.dest(path.join(dest, 'css')))
+    .on('error', swallowError);
 });
 
 // Insert all css files
 gulp.task('inject files', ['css compile', 'create template cache'], function () {
   // change this rule, for production version include min.css
   gulp.src(path.join(dest, 'html/index.html'))
-      .pipe(gulp.dest(dest))
-      .pipe(inject(
-          gulp.src([path.join(dest, 'css', '**/*.css')], {read: false}),
-          {
-            relative: true,
-            name: 'css'
-          }))
-      .pipe(inject(
-          gulp.src([path.join(dest, 'templates.js')], {read: false}),
-          {
-            relative: true,
-            name: 'templates'
-          }))
-      .pipe(inject(
-          gulp.src(path.joinArray(dest, 'js', paths.js)) // gulp-angular-filesort depends on file contents, so don't use {read: false} here
-              .pipe(angularFilesort())
-              .on('error', swallowError),
-          {
-            relative: true,
-            name: 'angular'
-          }))
-      .pipe(inject(
-          gulp.src(bowerLib.ext('css').files)
-              .pipe(gulp.dest(path.join(dest, 'bower'))),
-          {
-            relative: true,
-            name: 'bower'
-          }))
-      .pipe(inject(
-          gulp.src(bowerLib.ext('js').files)
-              .pipe(gulp.dest(path.join(dest, 'bower'))),
-          {
-            relative: true,
-            name: 'bower'
-          }))
-      .pipe(inject(
-          gulp.src(path.joinArray(src, paths.vendors))
-              .pipe(gulp.dest(path.join(dest, 'vendors'))),
-          {
-            relative: true,
-            name: 'vendors'
-          }))
-      .pipe(gulp.dest(dest));
+    .pipe(gulp.dest(dest))
+    .pipe(inject(
+      gulp.src([path.join(dest, 'css', '**/*.css')], {read: false}),
+      {
+        relative: true,
+        name: 'css'
+      }))
+    .pipe(inject(
+      gulp.src(path.joinArray(dest, 'js', paths.js)) // gulp-angular-filesort depends on file contents, so don't use {read: false} here
+        .pipe(angularFilesort())
+        .on('error', swallowError),
+      {
+        relative: true,
+        name: 'angular'
+      }))
+    .pipe(inject(
+      gulp.src(bowerLib.ext(['js', 'css', 'eot', 'woff', 'ttf', 'svg']).files, {read: false})
+        .pipe(gulp.dest(path.join(dest, 'bower'))),
+      {
+        relative: true,
+        name: 'bower'
+      }))
+    //.pipe(inject(
+    //  gulp.src(bowerLib.ext('js').files)
+    //    .pipe(gulp.dest(path.join(dest, 'bower'))),
+    //  {
+    //    relative: true,
+    //    name: 'bower'
+    //  }))
+    .pipe(inject(
+      gulp.src(path.joinArray(src, paths.vendors))
+        .pipe(gulp.dest(path.join(dest, 'vendors'))),
+      {
+        relative: true,
+        name: 'vendors'
+      }))
+    .pipe(gulp.dest(dest));
 });
 
 // copy img files
 gulp.task('copy img', function () {
   return gulp.src(path.joinArray(src, paths.img))
-      .pipe(gulp.dest(dest));
+    .pipe(gulp.dest(dest));
 });
 
 // copy fonts files
 gulp.task('copy fonts', function () {
   return gulp.src(path.joinArray(src, paths.fonts))
-      .pipe(gulp.dest(path.join(dest, 'fonts')))
+    .pipe(gulp.dest(path.join(dest, 'fonts')))
 });
 
 // copy js files
 gulp.task('copy js', function () {
   return gulp.src(path.joinArray(src, paths.js))
-      .pipe(gulp.dest(path.join(dest, 'js')))
+    .pipe(gulp.dest(path.join(dest, 'js')))
 });
 
 gulp.task('build', ['copy img', 'copy fonts', 'copy js', 'inject files']);
@@ -169,7 +163,7 @@ gulp.task('serve', ['build', 'watch'], function () {
 gulp.task('watch', function () {
   var w = path.joinArray(src, '**/*');
   w.push('./bower.json');
-  watch(w, function() {
+  watch(w, function () {
     console.log(arguments);
     gulp.run('build');
   });

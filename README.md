@@ -7,3 +7,5 @@
 ### Run
 - dev: `npm run dev`
 - prod: `npm run prod`
+
+Open page on http://localhost:8003

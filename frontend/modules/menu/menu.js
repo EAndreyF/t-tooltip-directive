@@ -1,10 +1,12 @@
-angular.module('App.module.menu', [
-])
+(function () {
+  'use strict';
 
-  .controller('MenuCtrl', function ($scope) {
+  angular
+    .module('App.module.menu', [])
+    .controller('MenuCtrl', MenuCtrl);
 
-    var model = {
-    };
-
-    $scope.rMenu = model;
-  });
+  function MenuCtrl() {
+    var vm = this;
+    vm.test = '123';
+  }
+})();

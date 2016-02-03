@@ -1,15 +1,23 @@
-angular.module('App.model.cards', [])
+(function () {
+  'use strict';
 
-    .factory('Cards', function () {
-      var model = {
-        cards: [],
-        addCard: function (card) {
-          model.cards.push(card);
-        },
-        getCards: function () {
-          return model.cards;
-        }
-      };
+  angular
+    .module('App.model.cards', [])
+    .factory('Cards', Cards);
 
-      return model
-    });
+  function Cards() {
+    return {
+      cards: [],
+      addCard: addCard,
+      getCards: getCards
+    };
+
+    function addCard(card) {
+      this.cards.push(card);
+    }
+
+    function getCards() {
+      return this.cards;
+    }
+  }
+})();
