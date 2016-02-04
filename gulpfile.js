@@ -106,19 +106,12 @@ gulp.task('inject files', ['css compile', 'create template cache'], function () 
         name: 'angular'
       }))
     .pipe(inject(
-      gulp.src(bowerLib.ext(['js', 'css', 'eot', 'woff', 'ttf', 'svg']).files, {read: false})
+      gulp.src(bowerLib.ext(['js', 'css', 'eot', 'woff', 'ttf', 'svg']).files)
         .pipe(gulp.dest(path.join(dest, 'bower'))),
       {
         relative: true,
         name: 'bower'
       }))
-    //.pipe(inject(
-    //  gulp.src(bowerLib.ext('js').files)
-    //    .pipe(gulp.dest(path.join(dest, 'bower'))),
-    //  {
-    //    relative: true,
-    //    name: 'bower'
-    //  }))
     .pipe(inject(
       gulp.src(path.joinArray(src, paths.vendors))
         .pipe(gulp.dest(path.join(dest, 'vendors'))),

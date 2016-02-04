@@ -44,7 +44,6 @@
 
       return this.open({
         scope: scope,
-        windowTopClass: 'modal-confirm',
         templateUrl: 'services/modal/confirm/confirm.html',
         controller: 'ModalConfirmCtrl',
         controllerAs: 'rConfirm',
