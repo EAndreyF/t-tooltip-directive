@@ -3,6 +3,7 @@
 
   angular
     .module('App.module.index', [
+      'cst.tooltip'
     ])
     .controller('IndexCtrl', IndexCtrl);
 
