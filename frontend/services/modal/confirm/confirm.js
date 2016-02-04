@@ -14,11 +14,11 @@
     vm.title = title;
 
     function ok() {
-      return this.confirm.result.resolve();
+      return this.$close();
     }
 
     function cancel() {
-      return this.confirm.result.reject();
+      return this.$dismiss();
     }
 
     function buttonOk() {

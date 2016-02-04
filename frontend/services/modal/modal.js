@@ -9,9 +9,9 @@
     .factory('Modal', Modal);
 
 
-  Modal.$inject = ['$window', '$compile', '$rootScope', '$uibModal'];
+  Modal.$inject = ['$rootScope', '$uibModal'];
 
-  function Modal($window, $compile, $rootScope, $uibModal) {
+  function Modal($rootScope, $uibModal) {
     return {
       dialog: null,
       close: close,
@@ -38,8 +38,7 @@
       scope.confirm = {
         title: options.title,
         ok: options.ok,
-        cancel: options.cancel,
-        result: $.Deferred()
+        cancel: options.cancel
       };
 
       return this.open({
