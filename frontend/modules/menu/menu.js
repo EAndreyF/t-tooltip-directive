@@ -7,6 +7,5 @@
 
   function MenuCtrl() {
     var vm = this;
-    vm.test = '123';
   }
 })();

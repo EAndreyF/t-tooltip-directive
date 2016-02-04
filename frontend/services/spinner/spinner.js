@@ -24,6 +24,7 @@
         if (!--spinnersCount) {
           clearTimeout(timer);
           modal && modal.close();
+          modal = null;
         }
       }, 300);
     }
@@ -42,11 +43,13 @@
         }
       }, 60 * 1000);
 
-      modal = Modal.open({
-        template: '<div></div>',
-        windowTemplateUrl: 'services/spinner/spinner.html',
-        windowClass: 'modal'
-      });
+      if (!modal) {
+        modal = Modal.open({
+          template: '<div></div>',
+          windowTemplateUrl: 'services/spinner/spinner.html',
+          windowClass: 'modal'
+        });
+      }
     }
   }
 

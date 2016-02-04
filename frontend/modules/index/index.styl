@@ -1,0 +1,18 @@
+.table
+  width: 1000px
+  display: table
+
+.table-row
+  display: table-row
+  height: 100px
+
+.table-cell
+  display: table-cell
+  border: 2px solid black
+
+random(min, max)
+  return floor( math(0, "random") * max + min )
+
+for num in (1..6)
+  .bg-{num}
+    background: hsl(random(0, 360), 50%, 50%)
