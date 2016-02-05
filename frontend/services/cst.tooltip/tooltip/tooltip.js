@@ -3,23 +3,28 @@
 
   angular
     .module('cst.tooltip')
-    .directive('cstTooltipDir', Directive);
+    .directive('cstTooltip', TooltipDirective);
 
-  function Directive() {
+  function TooltipDirective() {
     return {
       restrict: 'E',
-      scope: true,
-      templateUrl: 'services/cst.tooltip/directive/tooltip.html',
+      scope: {
+        element: '='
+      },
+      templateUrl: 'services/cst.tooltip/tooltip/tooltip.html',
       controller: TooltipCtrl,
-      controllerAs: 'tp'
+      controllerAs: 'tp',
+      bindToController: true
     };
   }
 
   TooltipCtrl.$inject = ['$scope', '$element'];
 
   function TooltipCtrl($scope, $element) {
+    var tp = this;
+
     $element = $($element[0]);
-    var $el = $($scope.element);
+    var $el = $(tp.element);
     var $canvas = $element.find('canvas');
     var $tooltip = $element.find('.cst-tooltip');
 
@@ -27,10 +32,18 @@
 
     $scope.$on('update', _update);
 
+    $scope._getElCenter = _getElCenter;
+
     return {
       getCanvasStyle: getCanvasStyle,
-      getIconsStyle: getIconsStyle
+      getIconsStyle: getIconsStyle,
+      getMainStyle: getMainStyle
     };
+
+    function getMainStyle() {
+      return {
+      }
+    }
 
     function getCanvasStyle() {
       return {
@@ -38,6 +51,7 @@
     }
 
     function getIconsStyle() {
+      console.debug('updated');
       var center = _getElCenter($el);
       var tooltipOffset = _getElOffset($tooltip);
       return {
@@ -47,7 +61,7 @@
     }
 
     function _update() {
-      console.debug('updated');
+      //console.debug('updated');
     }
 
     function _getElCenter($el) {

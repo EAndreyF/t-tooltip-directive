@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "gulp",
+    "dev": "gulp clean && gulp",
     "prod": "gulp build && node serve"
   },
   "author": "Andrey Evstropov",

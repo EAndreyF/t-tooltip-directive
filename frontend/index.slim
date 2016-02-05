@@ -9,9 +9,10 @@ html
     /! css:css
     /! endinject
 
-  body(ng-app='App' ng-controller='ApplicationCtrl')
-    .wrapper
-      ui-view
+  body
+    div ng-app='App' ng-controller='ApplicationCtrl'
+      .wrapper
+        ui-view
 
     /! vendors:js
     /! endinject
