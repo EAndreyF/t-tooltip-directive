@@ -4,3 +4,4 @@ bower_components
 app
 *.log
 *tmp*
+.dist

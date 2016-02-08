@@ -38,7 +38,7 @@ path.joinArray = function () {
 };
 
 var src = './frontend';
-var dest = './.tmp';
+var dest = './.dist';
 
 var paths = {
   css: ['./app.styl'],
@@ -145,7 +145,7 @@ gulp.task('build', ['copy img', 'copy fonts', 'copy js', 'inject files']);
 // local server
 gulp.task('serve', ['build', 'watch'], function () {
   connect.server({
-    root: '.tmp',
+    root: '.dist',
     port: 8003,
     livereload: false
   });

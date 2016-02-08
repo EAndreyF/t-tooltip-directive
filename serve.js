@@ -9,6 +9,6 @@ server.listen(config.get('frontPort'), function () {
     console.log('Example app listening at http://localhost:%s', port);
 });
 
-app.use(express.static(path.join(__dirname, '.tmp')));
+app.use(express.static(path.join(__dirname, '.dist')));
 
 module.exports = app;
