@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "./node_modules/.bin/gulp clean && ./node_modules/.bin/gulp",
-    "prod": "./node_modules/.bin/gulp build && node serve"
+    "prod": "./node_modules/.bin/gulp build && node serve",
+    "postinstall": "bower i"
   },
   "author": "Andrey Evstropov",
   "dependencies": {
