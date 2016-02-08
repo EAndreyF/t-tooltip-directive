@@ -19,7 +19,8 @@
       _sizeVisCalculate: _sizeVisCalculate,
       _sort: _sort,
       _getIconStyle: _getIconStyle,
-      _getCanvasStyle: _getCanvasStyle
+      _getCanvasStyle: _getCanvasStyle,
+      _checkPointInsidePolygon: _checkPointInsidePolygon
     };
 
     function getAllTooltips() {
@@ -65,9 +66,18 @@
 
       this._sizeVisCalculate();
       this._sort();
+      var poly = [];
       this.getAllTooltips().forEach(function (el) {
-        _this._getCanvasStyle(el, el.canvas);
+        _this._getCanvasStyle(el, el.canvas, poly);
         _this._getIconStyle(el, el.icon);
+        poly.push([
+          [el.canvas.leftOrg, el.canvas.topOrg],
+          [el.canvas.leftOrg + el.canvas.widthOrg, el.canvas.topOrg],
+          [el.canvas.leftOrg + el.canvas.widthOrg, el.canvas.topOrg + el.canvas.heightOrg],
+          [el.icon.leftOrg + ICON_WIDTH, el.icon.topOrg + ICON_HEIGHT],
+          [el.icon.leftOrg, el.icon.topOrg + ICON_HEIGHT],
+          [el.icon.leftOrg, le.icon.topOrg]
+        ]);
       });
     }
 
@@ -120,6 +130,11 @@
         top = 0;
       }
 
+      canvas.widthOrg = width;
+      canvas.heightOrg = height;
+      canvas.leftOrg = left;
+      canvas.topOrg = top;
+
       canvas.width = width + 'px';
       canvas.height = height + 'px';
       canvas.left = left + 'px';
@@ -128,9 +143,29 @@
 
     function _getIconStyle(el, icon) {
       var canvasPosition = el.canvas;
-      var top = +canvasPosition.top.slice(0, -2);
+      var top = canvasPosition.topOrg;
       icon.left = canvasPosition.left;
       icon.top = top + BZ_HEIGHT + 'px';
+
+      icon.leftOrg = canvasPosition.leftOrg;
+      icon.topOrg = top + BZ_HEIGHT;
+    }
+
+    function _checkPointInsidePolygon(point, vs) {
+      var x = point[0], y = point[1];
+
+      var inside = false;
+      for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+        var xi = vs[i][0], yi = vs[i][1];
+        var xj = vs[j][0], yj = vs[j][1];
+
+        var intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+      }
+
+      return inside;
+
     }
 
   }

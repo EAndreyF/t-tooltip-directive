@@ -37,9 +37,9 @@
       right: 0
     };
 
-    $scope.$watchGroup(['tp.canvas.width', 'tp.canvas.height'], function (newVal, oldVal, scope) {
-      var width = +newVal[0].slice(0, -2);
-      var height = +newVal[1].slice(0, -2);
+    $scope.$watchGroup(['tp.canvas.widthOrg', 'tp.canvas.heightOrg'], function (newVal, oldVal, scope) {
+      var width = newVal[0];
+      var height = newVal[1];
       canvas.width = width;
       canvas.height = height;
       scope.tp._canvasLineDraw(width, height)

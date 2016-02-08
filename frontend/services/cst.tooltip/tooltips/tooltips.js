@@ -27,7 +27,7 @@
 
     $scope.$watch(function() {
       cstTooltipFct.recalc();
-    })
+    });
 
     return {
       getTooltips: cstTooltipFct.getAllTooltips.bind(cstTooltipFct)
