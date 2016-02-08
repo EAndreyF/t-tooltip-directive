@@ -22,5 +22,8 @@
     "gulp-slim": "^0.3.0",
     "gulp-stylus": "^2.1.0",
     "gulp-watch": "^4.3.5"
+  },
+  "engines" : {
+    "node" : ">=0.10.3 <5.0"
   }
 }
