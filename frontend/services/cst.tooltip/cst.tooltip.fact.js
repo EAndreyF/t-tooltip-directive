@@ -5,9 +5,9 @@
     .module('cst.tooltip')
     .factory('cstTooltipFct', TooltipFct);
 
-  TooltipFct.$inject = ['CANVAS_WIDTH', 'CANVAS_HEIGHT', 'BZ_HEIGHT'];
+  TooltipFct.$inject = ['CANVAS_WIDTH', 'CANVAS_HEIGHT', 'BZ_HEIGHT', 'ICON_WIDTH', 'ICON_HEIGHT'];
 
-  function TooltipFct(CANVAS_WIDTH, CANVAS_HEIGHT, BZ_HEIGHT) {
+  function TooltipFct(CANVAS_WIDTH, CANVAS_HEIGHT, BZ_HEIGHT, ICON_WIDTH, ICON_HEIGHT) {
 
     return {
       _tooltips: [],
@@ -39,9 +39,11 @@
     }
 
     function _hasTooltip(element) {
-      return this._tooltips.some(function (el) {
+      var alreadyAdded = this._tooltips.some(function (el) {
         return el.element === element;
       });
+      var selfTooltip = $(element).parents('.cst-tooltip').length;
+      return alreadyAdded || !!selfTooltip;
     }
 
     function _createTooltip(element) {
@@ -61,7 +63,7 @@
     function recalc() {
       var _this = this;
 
-      this._sizeVisCalculate()
+      this._sizeVisCalculate();
       this._sort();
       this.getAllTooltips().forEach(function (el) {
         _this._getCanvasStyle(el, el.canvas);
