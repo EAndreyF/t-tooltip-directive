@@ -91,10 +91,10 @@
         if (a.top > b.top) {
           return -1;
         }
-        if (a.top < b.top) {
+        if (a.left < b.left) {
           return 1;
         }
-        if (a.top > b.top) {
+        if (a.left > b.left) {
           return -1;
         }
         return 0;
@@ -104,15 +104,26 @@
     function _getCanvasStyle(el, canvas) {
       var centerX = el.left + el.width / 2;
       var centerY = el.top + el.height / 2;
+      var width = CANVAS_WIDTH;
+      var height = CANVAS_HEIGHT;
+      var left = centerX - CANVAS_WIDTH;
+      var top = centerY - CANVAS_HEIGHT;
+      var minLeft = ICON_WIDTH / 2;
 
-      var leftTop = {
-        left: centerX - CANVAS_WIDTH,
-        top: centerY - CANVAS_HEIGHT
-      };
-      canvas.width = CANVAS_WIDTH + 'px';
-      canvas.height = CANVAS_HEIGHT + 'px';
-      canvas.left = leftTop.left + 'px';
-      canvas.top = leftTop.top + 'px';
+      if (left < minLeft) {
+        width = width - (minLeft - left);
+        left = minLeft;
+      }
+
+      if (top < 0) {
+        height += top;
+        top = 0;
+      }
+
+      canvas.width = width + 'px';
+      canvas.height = height + 'px';
+      canvas.left = left + 'px';
+      canvas.top = top + 'px';
     }
 
     function _getIconStyle(el, icon) {
