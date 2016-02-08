@@ -11,4 +11,4 @@
 Open page on http://localhost:8003
 
 ### Deploy on heroku
-- heroku config:set BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-multi.git
+-  heroku buildpacks:set https://github.com/heroku/heroku-buildpack-multi.git
