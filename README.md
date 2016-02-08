@@ -3,6 +3,7 @@
 ### Install
 - `npm i`
 - `bower i`
+- `gem install slim --no-ri --no-rdoc`
 
 ### Run
 - dev: `npm run dev`
