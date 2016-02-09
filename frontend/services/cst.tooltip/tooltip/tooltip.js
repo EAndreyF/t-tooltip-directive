@@ -9,7 +9,6 @@
     return {
       restrict: 'E',
       scope: {
-        element: '=',
         icon: '=',
         canvas: '='
       },

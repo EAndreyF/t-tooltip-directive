@@ -21,8 +21,9 @@
 
     $document.on('click', function (event) {
       var element = event.target;
-      cstTooltipFct.addTooltip(element);
-      $scope.$digest();
+      if (cstTooltipFct.addTooltip(element)) {
+        $scope.$digest();
+      }
     });
 
     $scope.$watch(function() {
