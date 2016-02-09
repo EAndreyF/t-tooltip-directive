@@ -82,7 +82,6 @@
       this.getAllTooltips().forEach(function (el) {
         _this._getStyle(el, el.canvas, el.icon, poly);
         poly.push(_this._getPolyPoints(el.canvas, el.icon));
-        console.log(poly);
       });
     }
 
@@ -372,47 +371,49 @@
         }
       }
 
-      console.error(lin1, lin2);
+      console.error(line1, line2);
     }
 
     function _getDiffY(line1, line2) {
-      //var x1 = Math.min(line1[0][0], line1[1][0]);
-      //var x2 = Math.max(line1[0][0], line1[1][0]);
-      //var y1 = Math.min(line1[0][1], line1[1][1]);
-      //var y2 = Math.max(line1[0][1], line1[1][1]);
-      //
-      //var x3 = Math.min(line2[0][0], line2[1][0]);
-      //var x4 = Math.max(line2[0][0], line2[1][0]);
-      //var y3 = Math.min(line2[0][1], line2[1][1]);
-      //var y4 = Math.max(line2[0][1], line2[1][1]);
-      //
-      //var a, k;
-      //// I
-      //a = (y4 - y1) / (y2 - y1);
-      //if (0 < a && a < 1) {
-      //  k = x4 - x1 - a * (x2 - x1);
-      //  if (k > 0) {
-      //    return k;
-      //  }
-      //}
-      //
-      //// II
-      //a = (y2 - y3) / (y4 - y3);
-      //if (0 < a && a < 1) {
-      //  k = x3 + a * (x4 - x3) - x2;
-      //  if (k > 0) {
-      //    return k;
-      //  }
-      //}
-      //
-      //// III
-      //a = (y1 - y3) / (y4 - y3);
-      //if (0 < a && a < 1) {
-      //  k = x3 + a * (x4 - x3) - x1;
-      //  if (k > 0) {
-      //    return k;
-      //  }
-      //}
+      this._sortLine(line1);
+      this._sortLine(line2);
+      var y1 = line1[0][0];
+      var y2 = line1[1][0];
+      var x1 = line1[0][1];
+      var x2 = line1[1][1];
+
+      var y3 = line2[0][0];
+      var y4 = line2[1][0];
+      var x3 = line2[0][1];
+      var x4 = line2[1][1];
+
+      var a, k;
+      // I
+      a = (y4 - y1) / (y2 - y1);
+      if (0 <= a && a <= 1) {
+        k = x4 - x1 - a * (x2 - x1);
+        if (k >= 0) {
+          return k;
+        }
+      }
+
+      // II
+      a = (y2 - y3) / (y4 - y3);
+      if (0 <= a && a <= 1) {
+        k = x3 + a * (x4 - x3) - x2;
+        if (k >= 0) {
+          return k;
+        }
+      }
+
+      // III
+      a = (y1 - y3) / (y4 - y3);
+      if (0 <= a && a <= 1) {
+        k = x3 + a * (x4 - x3) - x1;
+        if (k >= 0) {
+          return k;
+        }
+      }
 
       console.error(line1, line2);
     }
