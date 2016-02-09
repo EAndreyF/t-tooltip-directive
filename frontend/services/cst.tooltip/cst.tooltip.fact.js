@@ -28,7 +28,7 @@
      */
     function getAllTooltips() {
       return this._tooltips.filter(function (el) {
-        return el.visibility;
+        return el.canvas.visibility;
       });
     }
 
@@ -85,9 +85,10 @@
         height: 0,
         left: 0,
         top: 0,
-        visibility: true,
         icon: {}, // styles for icon
-        canvas: {} // styles for canvas
+        canvas: {
+          visibility: true
+        } // styles for canvas
       });
     }
 
@@ -114,9 +115,10 @@
         el.top = offset.top;
         el.centerx = el.left + el.width / 2;
         el.centery = el.top + el.height / 2;
-        el.visibility = el.$element.is(':visible');
+        el.canvas.visibility = el.$element.is(':visible');
       });
     }
+
 
     /**
      * Sort tooltip. First in top left corner

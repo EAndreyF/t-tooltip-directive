@@ -50,13 +50,12 @@
     function _getStyle(el, canvas, icon, polys) {
       var _this = this;
 
-      var centerX = el.left + el.width / 2;
-      var centerY = el.top + el.height / 2;
+      var centerX = el.centerx;
+      var centerY = el.centery;
       var width = CANVAS_WIDTH;
       var height = CANVAS_HEIGHT;
       var left = centerX - CANVAS_WIDTH;
       var top = centerY - CANVAS_HEIGHT;
-      var visibility = true;
 
       if (left < MIN_LEFT) {
         width = width - (MIN_LEFT - left);
@@ -78,16 +77,15 @@
         width: width,
         height: height,
         left: left,
-        top: top,
-        visibility: visibility
+        top: top
       });
 
       return polys.every(function (poly) {
-        if (!visibility) {
+        if (!canvas.visibility) {
           return false;
         }
 
-        return _this._checkAndMove(poly, canvas, icon);
+        return _this._checkAndMove(poly, canvas, icon, [centerX, centerY]);
       });
     }
 
@@ -96,10 +94,11 @@
      * @param poly
      * @param canvas
      * @param icon
+     * @param startPoint
      * @returns {boolean}
      * @private
      */
-    function _checkAndMove(poly, canvas, icon) {
+    function _checkAndMove(poly, canvas, icon, startPoint) {
       var ps = this._getPolyPoints(canvas, icon);
       var width = canvas.widthOrg;
       var height = canvas.heightOrg;
@@ -117,19 +116,21 @@
           var line2 = intersection.line;
 
           // try decrease width
-          var diffX = this._getDiffX(line, line2) + 1;
-          if (width - diffX < CANVAS_MIN_WIDTH) {
+          var diffX = this._getDiffX(line, line2, startPoint);
+          if (diffX < 0 || width - diffX < CANVAS_MIN_WIDTH) {
             // try decrease height
-            var diffY = this._getDiffY(line, line2) + 1;
-            if (height - diffY < CANVAS_MIN_HEIGHT) {
-              return visibility = false;
+            var diffY = this._getDiffY(line, line2, startPoint);
+            if (diffY < 0 || height - diffY < CANVAS_MIN_HEIGHT) {
+              return canvas.visibility = false;
             } else {
+              diffY++;
               height -= diffY;
               top += diffY;
               changed = true;
               break;
             }
           } else {
+            diffX++;
             width -= diffX;
             left += diffX;
             changed = true;
@@ -145,10 +146,9 @@
           width: width,
           height: height,
           left: left,
-          top: top,
-          visibility: visibility
+          top: top
         });
-        return this._checkAndMove(poly, canvas, icon);
+        return this._checkAndMove(poly, canvas, icon, startPoint);
       }
       return true;
     }
@@ -182,6 +182,9 @@
       o.canvas.leftOrg = o.left;
       o.canvas.topOrg = o.top;
 
+      o.centerx = o.left + o.width;
+      o.centery = o.top + o.height;
+
       o.icon.leftOrg = o.canvas.leftOrg - ICON_WIDTH / 2;
       o.icon.topOrg = o.canvas.topOrg + BZ_HEIGHT - ICON_HEIGHT / 2;
       o.icon.widthOrg = ICON_WIDTH;
@@ -196,8 +199,6 @@
       o.icon.top = o.icon.topOrg + 'px';
       o.icon.width = o.icon.widthOrg + 'px';
       o.icon.height = o.icon.heightOrg + 'px';
-
-      o.canvas.visibility = o.visibility;
     }
 
     /**
@@ -282,10 +283,11 @@
      * How to change x position to not intersect line1 and line2
      * @param line1
      * @param line2
+     * @param startPoint
      * @returns {number|*}
      * @private
      */
-    function _getDiffX(line1, line2) {
+    function _getDiffX(line1, line2, startPoint) {
       this._sortLine(line1);
       this._sortLine(line2);
       var x1 = line1[0][0];
@@ -298,35 +300,66 @@
       var y3 = line2[0][1];
       var y4 = line2[1][1];
 
+      var px = startPoint[0];
+      var py = startPoint[1];
+
+      var fromCenter = false;
+
+      if (px === x2 && py === y2) {
+        fromCenter = true;
+      }
+
       var a, k;
-      // I
-      a = (y4 - y1) / (y2 - y1);
-      if (0 <= a && a <= 1) {
-        k = x4 - x1 - a * (x2 - x1);
-        if (k >= 0) {
-          return k;
+      if (!fromCenter) {
+        // I
+        a = (y4 - y1) / (y2 - y1);
+        if (0 <= a && a <= 1) {
+          k = x4 - x1 - a * (x2 - x1);
+          if (k >= 0 && x2 + k <= px) {
+            return k;
+          }
         }
-      }
 
-      // II
-      a = (y2 - y3) / (y4 - y3);
-      if (0 <= a && a <= 1) {
-        k = x3 + a * (x4 - x3) - x2;
-        if (k >= 0) {
-          return k;
+        // III
+        a = (y1 - y3) / (y4 - y3);
+        if (0 <= a && a <= 1) {
+          k = x3 + a * (x4 - x3) - x1;
+          if (k >= 0 && x2 + k <= px) {
+            return k;
+          }
         }
-      }
 
-      // III
-      a = (y1 - y3) / (y4 - y3);
-      if (0 <= a && a <= 1) {
-        k = x3 + a * (x4 - x3) - x1;
-        if (k >= 0) {
-          return k;
+        // II
+        a = (y2 - y3) / (y4 - y3);
+        if (0 <= a && a <= 1) {
+          k = x3 + a * (x4 - x3) - x2;
+          if (k >= 0 && x2 + k <= px) {
+            return k;
+          }
         }
-      }
 
-      console.error(line1, line2);
+        return -1;
+      } else {
+
+        // I
+        a = (y4 - y2) / (y1 - y2);
+        if (0 <= a && a <= 1) {
+          k = (x4 - x2) / a + x2 - x1;
+          if (k >= 0 && x1 + k <= px) {
+            return k;
+          }
+        }
+
+        // II
+        a = (y1 - y3) / (y4 - y3);
+        if (0 <= a && a <= 1) {
+          k = a * (x4 - x3) + x3 - x1;
+          if (k >= 0 && x1 + k <= px) {
+            return k;
+          }
+        }
+        return -1;
+      }
     }
 
     /**
@@ -336,7 +369,7 @@
      * @returns {number|*}
      * @private
      */
-    function _getDiffY(line1, line2) {
+    function _getDiffY(line1, line2, startPoint) {
       this._sortLine(line1);
       this._sortLine(line2);
       var y1 = line1[0][0];
@@ -349,21 +382,15 @@
       var x3 = line2[0][1];
       var x4 = line2[1][1];
 
+      var px = startPoint[1];
+      var py = startPoint[0];
+
       var a, k;
       // I
       a = (y4 - y1) / (y2 - y1);
       if (0 <= a && a <= 1) {
         k = x4 - x1 - a * (x2 - x1);
-        if (k >= 0) {
-          return k;
-        }
-      }
-
-      // II
-      a = (y2 - y3) / (y4 - y3);
-      if (0 <= a && a <= 1) {
-        k = x3 + a * (x4 - x3) - x2;
-        if (k >= 0) {
+        if (k >= 0 && x1 + k <= px) {
           return k;
         }
       }
@@ -372,16 +399,24 @@
       a = (y1 - y3) / (y4 - y3);
       if (0 <= a && a <= 1) {
         k = x3 + a * (x4 - x3) - x1;
-        if (k >= 0) {
+        if (k >= 0 && x1 + k <= px) {
           return k;
         }
       }
 
-      console.error(line1, line2);
+      // II
+      a = (y2 - y3) / (y4 - y3);
+      if (0 <= a && a <= 1) {
+        k = x3 + a * (x4 - x3) - x2;
+        if (k >= 0 && x1 + k <= px) {
+          return k;
+        }
+      }
+      return -1;
     }
 
     /**
-     * Sort line points. First left top
+     * Sort line points. First lefter then topper
      * @param line
      * @returns {*}
      * @private

@@ -1,2 +1,8 @@
 .cst-tooltips
-  cst-tooltip ng-repeat="tooltip in tps.getTooltips() track by tooltip.id " icon="tooltip.icon" canvas="tooltip.canvas" tid="tooltip.id" ng-if="tooltip.visibility"
+  cst-tooltip(
+    ng-repeat="tooltip in tps.getTooltips() track by tooltip.id"
+    icon="tooltip.icon"
+    canvas="tooltip.canvas"
+    tid="tooltip.id"
+    ng-if="tooltip.canvas.visibility"
+    )
