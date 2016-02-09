@@ -79,6 +79,8 @@
         id: id++,
         element: element,
         $element: $(element),
+        centerx: 0,
+        centery: 0,
         width: 0,
         height: 0,
         left: 0,
@@ -110,6 +112,8 @@
         el.height = el.$element.outerHeight();
         el.left = offset.left;
         el.top = offset.top;
+        el.centerx = el.left + el.width / 2;
+        el.centery = el.top + el.height / 2;
         el.visibility = el.$element.is(':visible');
       });
     }
@@ -120,10 +124,10 @@
      */
     function _sort() {
       this._tooltips.sort(function (a, b) {
-        var acy = a.top + a.height / 2;
-        var acx = a.left + a.width / 2;
-        var bcy = b.top + b.height / 2;
-        var bcx = b.left + b.width / 2;
+        var acy = a.centery;
+        var acx = a.centerx;
+        var bcy = b.centery;
+        var bcx = b.centerx;
         var m = -1;
         if (acy < bcy) {
           return m;
