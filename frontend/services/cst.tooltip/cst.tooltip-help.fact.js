@@ -316,7 +316,7 @@
         a = (y4 - y1) / (y2 - y1);
         if (0 <= a && a <= 1) {
           k = x4 - x1 - a * (x2 - x1);
-          if (k >= 0 && x2 + k <= px) {
+          if (k >= 0 && x1 + k <= px) {
             return k;
           }
         }
@@ -325,7 +325,7 @@
         a = (y1 - y3) / (y4 - y3);
         if (0 <= a && a <= 1) {
           k = x3 + a * (x4 - x3) - x1;
-          if (k >= 0 && x2 + k <= px) {
+          if (k >= 0 && x1 + k <= px) {
             return k;
           }
         }
@@ -334,7 +334,7 @@
         a = (y2 - y3) / (y4 - y3);
         if (0 <= a && a <= 1) {
           k = x3 + a * (x4 - x3) - x2;
-          if (k >= 0 && x2 + k <= px) {
+          if (k >= 0 && x1 + k <= px) {
             return k;
           }
         }

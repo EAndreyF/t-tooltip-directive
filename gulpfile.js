@@ -156,8 +156,9 @@ gulp.task('serve', ['build'], function () {
 gulp.task('watch', ['build'], function () {
   var w = path.joinArray(src, '**/*');
   w.push('./bower.json');
-  watch(w, function () {
-    console.log(arguments);
-    gulp.run('build');
-  });
+  gulp.watch(w, ['build']);
+  //watch(w, function () {
+  //  console.log(arguments);
+  //  gulp.run('build');
+  //});
 });
