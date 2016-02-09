@@ -11,6 +11,7 @@ var watch = require('gulp-watch');
 var connect = require('gulp-connect');
 var templateCache = require('gulp-angular-templatecache');
 var path = require('path');
+var es = require('event-stream');
 
 path._joinArrayToArray = function (arr, arr2) {
   var res = [];
@@ -88,6 +89,16 @@ gulp.task('css compile', function () {
 
 // Insert all css files
 gulp.task('inject files', ['css compile', 'create template cache'], function () {
+  var s1 = gulp.src(path.joinArray(dest, 'js', paths.js)) // gulp-angular-filesort depends on file contents, so don't use {read: false} here
+    .pipe(angularFilesort())
+    .on('error', swallowError);
+
+  var s2 = gulp.src(bowerLib.ext(['js', 'css', 'eot', 'woff', 'ttf', 'svg']).files)
+    .pipe(gulp.dest(path.join(dest, 'bower')));
+
+  var s3 = gulp.src(path.joinArray(src, paths.vendors))
+    .pipe(gulp.dest(path.join(dest, 'vendors')));
+
   // change this rule, for production version include min.css
   return gulp.src(path.join(dest, 'html/index.html'))
     //.pipe(gulp.dest(dest))
@@ -98,23 +109,19 @@ gulp.task('inject files', ['css compile', 'create template cache'], function () 
         name: 'css'
       }))
     .pipe(inject(
-      gulp.src(path.joinArray(dest, 'js', paths.js)) // gulp-angular-filesort depends on file contents, so don't use {read: false} here
-        .pipe(angularFilesort())
-        .on('error', swallowError),
+      es.merge(s1),
       {
         relative: true,
         name: 'angular'
       }))
     .pipe(inject(
-      gulp.src(bowerLib.ext(['js', 'css', 'eot', 'woff', 'ttf', 'svg']).files)
-        .pipe(gulp.dest(path.join(dest, 'bower'))),
+      es.merge(s2),
       {
         relative: true,
         name: 'bower'
       }))
     .pipe(inject(
-      gulp.src(path.joinArray(src, paths.vendors))
-        .pipe(gulp.dest(path.join(dest, 'vendors'))),
+      es.merge(s3),
       {
         relative: true,
         name: 'vendors'

@@ -15,9 +15,22 @@
     };
   }
 
-  TooltipsCtrl.$inject = ['$scope', '$document', 'cstTooltipFct', '$rootScope'];
+  TooltipsCtrl.$inject = ['$scope', '$document', '$window', 'cstTooltipFct', '$rootScope'];
 
-  function TooltipsCtrl($scope, $document, cstTooltipFct, $rootScope) {
+  function TooltipsCtrl($scope, $document, $window, cstTooltipFct, $rootScope) {
+
+    var throttle = function(timeout, fn) {
+      var lastCall = 0;
+
+      function wrapper() {
+        if (+new Date() - lastCall > timeout) {
+          lastCall = +new Date();
+          fn();
+        }
+      }
+
+      return wrapper;
+    };
 
     $document.on('click', function (event) {
       var element = event.target;
@@ -26,6 +39,11 @@
         $scope.$digest();
       }
     });
+
+    $($window).on('resize', throttle(100, function () {
+      cstTooltipFct.recalc();
+      $scope.$digest();
+    }));
 
     $rootScope.$watch(function() {
       cstTooltipFct.recalc();
