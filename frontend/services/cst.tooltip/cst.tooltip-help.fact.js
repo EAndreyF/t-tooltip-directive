@@ -33,8 +33,9 @@
       var _this = this;
       var poly = [];
       tooltips.forEach(function (el) {
-        _this._getStyle(el, el.canvas, el.icon, poly);
-        poly.push(_this._getPolyPoints(el.canvas, el.icon));
+        if (_this._getStyle(el, el.canvas, el.icon, poly)) {
+          poly.push(_this._getPolyPoints(el.canvas, el.icon));
+        }
       });
     }
 
