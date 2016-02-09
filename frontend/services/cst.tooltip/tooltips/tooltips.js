@@ -15,18 +15,19 @@
     };
   }
 
-  TooltipsCtrl.$inject = ['$scope', '$document', 'cstTooltipFct'];
+  TooltipsCtrl.$inject = ['$scope', '$document', 'cstTooltipFct', '$rootScope'];
 
-  function TooltipsCtrl($scope, $document, cstTooltipFct) {
+  function TooltipsCtrl($scope, $document, cstTooltipFct, $rootScope) {
 
     $document.on('click', function (event) {
       var element = event.target;
       if (cstTooltipFct.addTooltip(element)) {
+        cstTooltipFct.recalc();
         $scope.$digest();
       }
     });
 
-    $scope.$watch(function() {
+    $rootScope.$watch(function() {
       cstTooltipFct.recalc();
     });
 

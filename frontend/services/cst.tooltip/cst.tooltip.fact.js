@@ -43,7 +43,6 @@
       if (!this._hasTooltip(element)) {
         console.log('add tooltip', event.target);
         this._createTooltip(element);
-        this.recalc();
         return true;
       } else {
         console.log('tooltip exists');
@@ -74,6 +73,7 @@
     }
 
     function recalc() {
+      console.info('recalc');
       var _this = this;
 
       this._sizeVisCalculate();
