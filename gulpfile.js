@@ -58,7 +58,7 @@ gulp.task('default', ['serve', 'watch']);
 
 // Clean dest folder
 gulp.task('clean', function () {
-  return del(path.join(dest, '**/*'));
+  return del([path.join(dest, '**/*'), dest]);
 });
 
 // Compile all template files
@@ -143,7 +143,7 @@ gulp.task('copy js', function () {
 gulp.task('build', ['copy img', 'copy fonts', 'copy js', 'inject files']);
 
 // local server
-gulp.task('serve', ['build'], function () {
+gulp.task('serve', ['build', 'watch'], function () {
   connect.server({
     root: '.dist',
     port: 8003,
@@ -156,9 +156,5 @@ gulp.task('serve', ['build'], function () {
 gulp.task('watch', ['build'], function () {
   var w = path.joinArray(src, '**/*');
   w.push('./bower.json');
-  gulp.watch(w, ['build']);
-  //watch(w, function () {
-  //  console.log(arguments);
-  //  gulp.run('build');
-  //});
+  watch(w, ['build']);
 });
