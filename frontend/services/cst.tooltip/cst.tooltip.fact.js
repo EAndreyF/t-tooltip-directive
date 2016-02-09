@@ -8,6 +8,7 @@
   TooltipFct.$inject = ['cstTooltipHelpFct'];
 
   function TooltipFct(cstTooltipHelpFct) {
+    var id = 0;
 
     return {
       _tooltips: [],
@@ -75,7 +76,7 @@
      */
     function _createTooltip(element) {
       this._tooltips.push({
-        id: this._tooltips.length,
+        id: id++,
         element: element,
         $element: $(element),
         width: 0,
