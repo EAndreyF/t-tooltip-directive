@@ -16,6 +16,6 @@
 random(min, max)
   return floor( math(0, "random") * max + min )
 
-for num in (1..6)
+for num in (1..100)
   .bg-{num}
     background: hsl(random(0, 360), 50%, 50%)

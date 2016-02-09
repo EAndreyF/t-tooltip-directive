@@ -120,17 +120,21 @@
      */
     function _sort() {
       this._tooltips.sort(function (a, b) {
+        var acy = a.top + a.height / 2;
+        var acx = a.left + a.width / 2;
+        var bcy = b.top + b.height / 2;
+        var bcx = b.left + b.width / 2;
         var m = -1;
-        if (a.top < b.top) {
+        if (acy < bcy) {
           return m;
         }
-        if (a.top > b.top) {
+        if (acy > bcy) {
           return -1 * m;
         }
-        if (a.left < b.left) {
+        if (acx < bcx) {
           return m;
         }
-        if (a.left > b.left) {
+        if (acx > bcx) {
           return -1 * m;
         }
         return 0;
