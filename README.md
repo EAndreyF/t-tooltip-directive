@@ -13,3 +13,8 @@ Open page on http://localhost:8003
 
 ### Deploy on heroku
 -  heroku buildpacks:set https://github.com/heroku/heroku-buildpack-multi.git
+
+### How it use
+- to add tooltip click on dom el
+- to remove tooltip click on tooltip's trash
+

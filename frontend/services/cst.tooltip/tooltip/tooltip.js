@@ -10,7 +10,8 @@
       restrict: 'E',
       scope: {
         icon: '=',
-        canvas: '='
+        canvas: '=',
+        tid: '='
       },
       templateUrl: 'services/cst.tooltip/tooltip/tooltip.html',
       controller: TooltipCtrl,
@@ -19,9 +20,9 @@
     };
   }
 
-  TooltipCtrl.$inject = ['$scope', '$element', 'BZ_HEIGHT'];
+  TooltipCtrl.$inject = ['$scope', '$element', 'BZ_HEIGHT', 'cstTooltipFct'];
 
-  function TooltipCtrl($scope, $element, BZ_HEIGHT) {
+  function TooltipCtrl($scope, $element, BZ_HEIGHT, cstTooltipFct) {
     var tp = this;
 
     $element = $($element[0]);
@@ -46,7 +47,8 @@
 
     return {
       getMainStyle: getMainStyle,
-      _canvasLineDraw: _canvasLineDraw
+      _canvasLineDraw: _canvasLineDraw,
+      remove: remove
     };
 
     function getMainStyle() {
@@ -68,6 +70,10 @@
       ctx.lineWidth = 2;
       ctx.strokeStyle = "#6eb41d";
       ctx.stroke();
+    }
+
+    function remove() {
+      cstTooltipFct.removeTooltip(this.tid)
     }
   }
 
