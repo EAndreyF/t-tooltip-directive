@@ -58,7 +58,7 @@ gulp.task('default', ['serve', 'watch']);
 
 // Clean dest folder
 gulp.task('clean', function () {
-  return del([path.join(dest, '**/*'), dest]);
+  return del([path.join(dest, '**/*')]);
 });
 
 // Compile all template files
