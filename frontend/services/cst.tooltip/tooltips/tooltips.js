@@ -21,11 +21,15 @@
 
     var throttle = function(timeout, fn) {
       var lastCall = 0;
+      var timeoutId;
 
       function wrapper() {
         if (+new Date() - lastCall > timeout) {
           lastCall = +new Date();
           fn();
+        } else {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(fn, timeout);
         }
       }
 
