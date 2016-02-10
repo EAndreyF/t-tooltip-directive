@@ -11,7 +11,7 @@ var watch = require('gulp-watch');
 var connect = require('gulp-connect');
 var templateCache = require('gulp-angular-templatecache');
 var path = require('path');
-var es = require('event-stream');
+var runSequence = require('run-sequence');
 
 path._joinArrayToArray = function (arr, arr2) {
   var res = [];
@@ -55,7 +55,7 @@ var swallowError = function (error) {
   this.emit('end');
 };
 
-gulp.task('default', ['serve', 'watch']);
+gulp.task('default', ['serve']);
 
 // Clean dest folder
 gulp.task('clean', function () {
@@ -88,44 +88,62 @@ gulp.task('css compile', function () {
 });
 
 // Insert all css files
-gulp.task('inject files', ['css compile', 'create template cache', 'copy js'], function () {
-  var s1 = gulp.src(path.joinArray(dest, 'js', paths.js)) // gulp-angular-filesort depends on file contents, so don't use {read: false} here
-    .pipe(angularFilesort())
-    .on('error', swallowError);
+gulp.task('inject files', ['css compile', 'create template cache', 'copy js'], function (cb) {
 
-  var s2 = gulp.src(bowerLib.ext(['js', 'css', 'eot', 'woff', 'ttf', 'svg']).files)
-    .pipe(gulp.dest(path.join(dest, 'bower')));
+  gulp.task('t0', function () {
+    return gulp.src(path.join(dest, 'html/index.html'))
+      .pipe(gulp.dest(dest));
+  });
 
-  var s3 = gulp.src(path.joinArray(src, paths.vendors))
-    .pipe(gulp.dest(path.join(dest, 'vendors')));
+  gulp.task('t1', function () {
+    return gulp.src(path.join(dest, 'index.html'))
+      .pipe(inject(
+        gulp.src([path.join(dest, 'css', '**/*.css')], {read: false}),
+        {
+          relative: true,
+          name: 'css'
+        }))
+      .pipe(gulp.dest(dest));
+  });
 
-  // change this rule, for production version include min.css
-  return gulp.src(path.join(dest, 'html/index.html'))
-    .pipe(inject(
-      gulp.src([path.join(dest, 'css', '**/*.css')], {read: false}),
-      {
-        relative: true,
-        name: 'css'
-      }))
-    .pipe(inject(
-      es.merge(s1),
-      {
-        relative: true,
-        name: 'angular'
-      }))
-    .pipe(inject(
-      es.merge(s2),
-      {
-        relative: true,
-        name: 'bower'
-      }))
-    .pipe(inject(
-      es.merge(s3),
-      {
-        relative: true,
-        name: 'vendors'
-      }))
-    .pipe(gulp.dest(dest));
+  gulp.task('t2', function () {
+    return gulp.src(path.join(dest, 'index.html'))
+      .pipe(inject(
+        gulp.src(path.joinArray(dest, 'js', paths.js)) // gulp-angular-filesort depends on file contents, so don't use {read: false} here
+          .pipe(angularFilesort())
+          .on('error', swallowError),
+        {
+          relative: true,
+          name: 'angular'
+        }))
+      .pipe(gulp.dest(dest));
+  });
+
+  gulp.task('t3', function () {
+    return gulp.src(path.join(dest, 'index.html'))
+      .pipe(inject(
+        gulp.src(bowerLib.ext(['js', 'css', 'eot', 'woff', 'ttf', 'svg']).files)
+          .pipe(gulp.dest(path.join(dest, 'bower'))),
+        {
+          relative: true,
+          name: 'bower'
+        }))
+      .pipe(gulp.dest(dest));
+  });
+
+  gulp.task('t4', function () {
+    return gulp.src(path.join(dest, 'index.html'))
+      .pipe(inject(
+        gulp.src(path.joinArray(src, paths.vendors))
+          .pipe(gulp.dest(path.join(dest, 'vendors'))),
+        {
+          relative: true,
+          name: 'vendors'
+        }))
+      .pipe(gulp.dest(dest));
+  });
+
+  runSequence('t0', 't1', 't2', 't3', 't4', cb);
 });
 
 // copy img files
