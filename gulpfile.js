@@ -88,7 +88,7 @@ gulp.task('css compile', function () {
 });
 
 // Insert all css files
-gulp.task('inject files', ['css compile', 'create template cache'], function () {
+gulp.task('inject files', ['css compile', 'create template cache', 'copy js'], function () {
   var s1 = gulp.src(path.joinArray(dest, 'js', paths.js)) // gulp-angular-filesort depends on file contents, so don't use {read: false} here
     .pipe(angularFilesort())
     .on('error', swallowError);
@@ -101,7 +101,6 @@ gulp.task('inject files', ['css compile', 'create template cache'], function () 
 
   // change this rule, for production version include min.css
   return gulp.src(path.join(dest, 'html/index.html'))
-    //.pipe(gulp.dest(dest))
     .pipe(inject(
       gulp.src([path.join(dest, 'css', '**/*.css')], {read: false}),
       {
@@ -163,5 +162,5 @@ gulp.task('serve', ['build', 'watch'], function () {
 gulp.task('watch', ['build'], function () {
   var w = path.joinArray(src, '**/*');
   w.push('./bower.json');
-  watch(w, ['build']);
+  gulp.watch(w, ['build']);
 });
